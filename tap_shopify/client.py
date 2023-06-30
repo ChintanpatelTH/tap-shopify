@@ -26,6 +26,7 @@ class tap_shopifyStream(RESTStream):
     records_jsonpath = "$[*]"  # Or override `parse_response`.
     next_page_token_jsonpath = "$.next_page"  # Or override `get_next_page_token`.
     last_id = None
+    _page_size = 250
 
     @property
     def authenticator(self):
