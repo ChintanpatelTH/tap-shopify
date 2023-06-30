@@ -74,6 +74,11 @@ class Tap_Shopify(Tap):
             th.BooleanType,
             description=("Enabled Shopify plus account endpoints.)"),
         ),
+        th.Property(
+            "backfill_interval",
+            th.NumberType,
+            description=("Max no of days for backfill"),
+        ),
     ).to_dict()
 
     def discover_streams(self) -> List[Stream]:

@@ -1,5 +1,8 @@
 """REST client handling, including tap_shopifyStream base class."""
+import pytz
 
+from dateutil.parser import parse
+from datetime import timedelta, datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 from urllib.parse import parse_qsl, urlsplit
@@ -10,6 +13,7 @@ from singer_sdk.streams import RESTStream
 from tap_shopify.auth import tap_shopifyAuthenticator
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
+tz = pytz.timezone("US/Pacific")
 
 
 class tap_shopifyStream(RESTStream):
@@ -70,12 +74,27 @@ class tap_shopifyStream(RESTStream):
         last_updated = context_state.get("replication_key_value")
 
         start_date = self.config.get("start_date")
+        interval = self.config.get("backfill_interval")
+
+        current_datetime = datetime.now(tz).replace(microsecond=0)
 
         if last_updated:
             params["updated_at_min"] = last_updated
+            if interval:
+                params["updated_at_max"] = (
+                    current_datetime.isoformat()
+                    if parse(last_updated) + timedelta(days=interval) > current_datetime
+                    else (parse(last_updated) + timedelta(days=interval)).isoformat()
+                )
             return params
         elif start_date:
             params["created_at_min"] = start_date
+            if interval:
+                params["created_at_max"] = (
+                    current_datetime.isoformat()
+                    if parse(start_date) + timedelta(days=interval) > current_datetime
+                    else (parse(start_date) + timedelta(days=interval)).isoformat()
+                )
         return params
 
     def post_process(self, row: dict, context: Optional[dict] = None):
