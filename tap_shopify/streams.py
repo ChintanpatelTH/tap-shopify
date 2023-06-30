@@ -151,7 +151,7 @@ class OrdersStream(tap_shopifyStream):
     """Orders stream."""
 
     name = "orders"
-    path = "/api/2022-01/orders.json?status=any"
+    path = "/api/2022-01/orders.json"
     records_jsonpath = "$.orders[*]"
     primary_keys = ["id"]
     replication_key = "updated_at"
