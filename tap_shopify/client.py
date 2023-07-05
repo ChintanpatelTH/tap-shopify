@@ -78,6 +78,9 @@ class tap_shopifyStream(RESTStream):
 
         current_datetime = datetime.now(tz).replace(microsecond=0)
 
+        # Add default order
+        params["order"] = "updated_at asc"
+
         if last_updated:
             params["updated_at_min"] = last_updated
             if interval:
