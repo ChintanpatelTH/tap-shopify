@@ -73,31 +73,22 @@ class tap_shopifyStream(RESTStream):
         context_state = self.get_context_state(context)
         last_updated = context_state.get("replication_key_value")
 
-        start_date = self.config.get("start_date")
+        config_start_date = self.config.get("start_date")
         interval = self.config.get("backfill_interval")
 
         current_datetime = datetime.now(tz).replace(microsecond=0)
 
         # Add default order
         params["order"] = "updated_at asc"
+        start_date = last_updated if last_updated else config_start_date
 
-        if last_updated:
-            params["updated_at_min"] = last_updated
-            if interval:
-                params["updated_at_max"] = (
-                    current_datetime.isoformat()
-                    if parse(last_updated) + timedelta(days=interval) > current_datetime
-                    else (parse(last_updated) + timedelta(days=interval)).isoformat()
-                )
-            return params
-        elif start_date:
-            params["created_at_min"] = start_date
-            if interval:
-                params["created_at_max"] = (
-                    current_datetime.isoformat()
-                    if parse(start_date) + timedelta(days=interval) > current_datetime
-                    else (parse(start_date) + timedelta(days=interval)).isoformat()
-                )
+        params["updated_at_min"] = start_date
+        if interval:
+            params["updated_at_max"] = (
+                current_datetime.isoformat()
+                if parse(start_date) + timedelta(days=interval) > current_datetime
+                else (parse(start_date) + timedelta(days=interval)).isoformat()
+            )
         return params
 
     def post_process(self, row: dict, context: Optional[dict] = None):
