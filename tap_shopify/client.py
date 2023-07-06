@@ -30,7 +30,6 @@ class tap_shopifyStream(RESTStream):
     records_jsonpath = "$[*]"  # Or override `parse_response`.
     next_page_token_jsonpath = "$.next_page"  # Or override `get_next_page_token`.
     last_id = None
-    _page_size = 250
 
     @property
     def authenticator(self):
@@ -80,6 +79,7 @@ class tap_shopifyStream(RESTStream):
 
         # Add default order
         params["order"] = "updated_at asc"
+        params["limit"] = 250
         start_date = last_updated if last_updated else config_start_date
 
         params["updated_at_min"] = start_date
