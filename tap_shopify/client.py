@@ -77,9 +77,14 @@ class tap_shopifyStream(RESTStream):
 
         current_datetime = datetime.now(tz).replace(microsecond=0)
 
-        # Add default order
+        # Add default params
         params["order"] = "updated_at asc"
         params["limit"] = 250
+
+        # For order pass status=any
+        if self.name == "orders":
+            params["status"] = "any"
+
         start_date = last_updated if last_updated else config_start_date
 
         params["updated_at_min"] = start_date
