@@ -87,7 +87,6 @@ class CustomersStream(tap_shopifyStream):
     replication_key = "updated_at"
     replication_method = "INCREMENTAL"
     schema_filepath = SCHEMAS_DIR / "customer.json"
-    is_sorted = True
 
 
 class LocationsStream(tap_shopifyStream):
@@ -100,7 +99,6 @@ class LocationsStream(tap_shopifyStream):
     replication_key = None
     replication_method = "FULL_TABLE"
     schema_filepath = SCHEMAS_DIR / "location.json"
-    is_sorted = True
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
         """Return a context dictionary for child streams."""
@@ -135,7 +133,6 @@ class InventoryItemsStream(tap_shopifyStream):
     primary_keys = ["id"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "inventory_item.json"
-    is_sorted = True
 
 
 class MetafieldsStream(tap_shopifyStream):
@@ -148,7 +145,6 @@ class MetafieldsStream(tap_shopifyStream):
     replication_key = "updated_at"
     replication_method = "INCREMENTAL"
     schema_filepath = SCHEMAS_DIR / "metafield.json"
-    is_sorted = True
 
 
 class OrdersStream(tap_shopifyStream):
@@ -161,7 +157,6 @@ class OrdersStream(tap_shopifyStream):
     replication_key = "updated_at"
     replication_method = "INCREMENTAL"
     schema_filepath = SCHEMAS_DIR / "order.json"
-    is_sorted = True
 
     def post_process(self, row: dict, context: Optional[dict] = None):
         """Perform syntactic transformations only."""
@@ -187,7 +182,6 @@ class ProductsStream(tap_shopifyStream):
     replication_key = "updated_at"
     replication_method = "INCREMENTAL"
     schema_filepath = SCHEMAS_DIR / "product.json"
-    is_sorted = True
 
 
 class TransactionsStream(tap_shopifyStream):
@@ -201,7 +195,6 @@ class TransactionsStream(tap_shopifyStream):
     primary_keys = ["id"]
     replication_key = None
     schema_filepath = SCHEMAS_DIR / "transaction.json"
-    is_sorted = True
 
 
 class UsersStream(tap_shopifyStream):
@@ -214,4 +207,3 @@ class UsersStream(tap_shopifyStream):
     replication_key = None
     replication_method = "FULL_TABLE"
     schema_filepath = SCHEMAS_DIR / "user.json"
-    is_sorted = True
